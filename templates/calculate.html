@@ -1,0 +1,15 @@
+{% extends "base.html"%}
+{% block content %}
+<div class = 'jumbotron'>
+
+    <h1>Thanks</h1>
+
+    <h1>It will take you {{ (its/12) | round }} years to pay your credit card</h1>
+    
+    <h1>You will pay total interest of £{{ total_int }} on your start balance of £{{balance}}</h1>
+
+    <<img src="data:image/png;base64, {{ plot_url }}">
+
+
+</div>
+{% endblock %}
