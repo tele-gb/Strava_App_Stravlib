@@ -5,7 +5,14 @@ You don't need to change port on which your app is exposed to the Internet - if 
 Just make sure that you create a GCP firewall rule to let the traffic in. By default HTTP server and HTTPS server open ports 80 and 443 respectively. Port 8088 is blocked by default.
 Example firewall rule to open up port 8080 for an instance with "tag1" tag from all IP's:
 
-gcloud compute --project=myproject firewall-rules create port8088 --direction=INGRESS --priority=1000 --network=default --action=ALLOW --rules=tcp:8088 --source-ranges=0.0.0.0/0 --target-tags=tag1
+gcloud compute --project=myproject firewall-rules create port8088 
+--direction=INGRESS 
+--priority=1000 
+--network=default 
+--action=ALLOW 
+--rules=tcp:8088 
+--source-ranges=0.0.0.0/0 
+--target-tags=tag1 ## tag can be something different likt the http server
 
 Also - assign "tag1" tag to the VM you want to "unblock".
 
