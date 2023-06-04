@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request,send_file
+from flask import Flask, render_template, request,send_file,session
 import io
 import base64
 import matplotlib.pyplot as plt
@@ -6,8 +6,17 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 import seaborn as sns
 import numpy as np
 import pandas as pd
+import requests
+import urllib3
+# import xmltodict
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+from stravaio import StravaIO
+from pprint import pprint # just a handy printing function
+from stravaio import strava_oauth2
+from datetime import datetime, timedelta
 
 app=Flask(__name__)
+app.secret_key = "Lis@2104"
 
 @app.route('/')
 def index():
@@ -15,7 +24,70 @@ def index():
 
 @app.route('/input')
 def input():
-    return render_template('input.html')
+    client_id = "96903"
+    client_secret = "0f4e7f68927263eb277b60fa2ef396b7964cdc94"
+
+    token = strava_oauth2(client_id=client_id, client_secret=client_secret)
+    strava_access_token=token['access_token']
+    # First_name=token['firstname']
+    # Surname=token['lastname']
+    session['sac'] = strava_access_token
+
+    return render_template('input.html',strava_access_token=strava_access_token,token=token)
+
+@app.route('/lastruns')
+def lastruns():
+    strava_access_token = session.get('sac') 
+    activites_url = "https://www.strava.com/api/v3/athlete/activities"
+    header = {'Authorization': 'Bearer ' + strava_access_token}
+    param = {'per_page': 200, 'page': 1}
+    my_dataset = requests.get(activites_url, headers=header, params=param).json()
+    print(header)
+    activitiesbyid_url = "https://www.strava.com/api/v3/activities/{}"
+    # url = activitiesbyid_url.format(runid)
+
+    best_5k_ls = []
+    name_ls = []
+    date_ls = []
+
+    its = len(my_dataset)
+
+    run_ls=[]
+    for i in range (0,20):
+        run_ls.append(my_dataset[i]['id'])
+
+    best_5k_ls=[]
+    best_5k_qls=[]
+    best_5k_rls=[]
+    date_ls=[]
+    for i in range (0,len(run_ls)):
+        runid = run_ls[i]
+#     print(runid)
+        url = activitiesbyid_url.format(runid)
+        activities = requests.get(url, headers=header).json()
+        #WORK OUT LENGTH OF BEST ACTIVITIES DICTIONARY
+    
+        print(url)
+#       print(activities)
+
+        if len(activities) == 63:
+            if len(activities['best_efforts']) > 5:
+                datetime_obj = datetime.strptime(activities['start_date'], '%Y-%m-%dT%H:%M:%S%z')      
+                date=datetime_obj.date()
+                date_ls.append(date)
+
+                best_5k_qls.append(activities["best_efforts"][5]["elapsed_time"]//60)
+                best_5k_rls.append(activities["best_efforts"][5]["elapsed_time"]%60)
+                best_5k_ls.append(activities["best_efforts"][5]["elapsed_time"]/60)
+
+                # best_5k_ls.reverse()
+                # date_ls.reverse()
+                # best_5k_qls.reverse()
+                # best_5k_rls.reverse()
+
+   
+    return render_template('lastruns.html',best_5k_ls=best_5k_ls,date_ls=date_ls,best_5k_rls=best_5k_rls,
+                           best_5k_qls=best_5k_qls)
 
 
 @app.route('/calculate')

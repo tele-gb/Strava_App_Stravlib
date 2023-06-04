@@ -30,10 +30,10 @@ Also - assign "tag1" tag to the VM you want to "unblock".
     python3 -m venv venv
 9 - Activate the venv (from the app directory you have just cloned)
     source venv/bin/activate
-10 - install pip and requirments
+10 - install pip and requirments into the venv
     python3 -m pip install --upgrade pip
     python3 -m pip install -r requirements.txt
 11 - run the gunicorn command to start the app (this is specific for port 8080)
     gunicorn basic_flask:app -b 0.0.0.0:8080
 
-12 - you can access the app @ http://34.28.40.253:8080
+12 - you can access the app @ http://34.28.40.253:8080 (or whatever the external ip address of the vm is)
