@@ -1,0 +1,9 @@
+#create a venv
+python -m venv myenv
+
+#activate the venv
+--navigate to root
+source myenv/Scripts/activate
+
+#install requirments
+pip install -r requirements.txt 

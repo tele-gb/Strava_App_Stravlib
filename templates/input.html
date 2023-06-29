@@ -2,13 +2,10 @@
 {% block content %}
 <div class='jumbotron'>
 
-    <h1>You've successfully authorised</h1>
-    <br>
-    <h2> Your access token is: {{strava_access_token}}</h2>
-    <!-- <h2> First Name: {{First_name}}</h2> -->
-    <!-- <h2> Surname: {{Surname}}</h2> -->
-    <br>
-    <a href="{{url_for('lastruns')}}" style="font-size: 24px; font-weight: bold ;">Get last runs</a>
+
+
+    <a href=" {{authorize_url}}">{{authorize_url}}</a>
+   
 
     <br>
 </div>

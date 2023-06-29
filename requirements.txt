@@ -4,5 +4,6 @@ pandas
 matplotlib
 seaborn
 gunicorn
-stravaio
+# stravaio
 Requests
+stravalib

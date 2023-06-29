@@ -1,0 +1,56 @@
+{% extends "base.html"%}
+{% block content %}
+<div class = 'jumbotron'>
+
+    <h1>Date:{{date_ls[0]}} Minutes: {{best_5k_qls[0]}}  Seconds: {{best_5k_rls[0]}}</h1>
+    <h1>Date:{{date_ls[1]}} Minutes: {{best_5k_qls[1]}}  Seconds: {{best_5k_rls[1]}}</h1>
+    <h1>Date:{{date_ls[2]}} Minutes: {{best_5k_qls[2]}}  Seconds: {{best_5k_rls[2]}}</h1>
+    <h1>Date:{{date_ls[3]}} Minutes: {{best_5k_qls[3]}}  Seconds: {{best_5k_rls[3]}}</h1>
+    <h1>Date:{{date_ls[4]}} Minutes: {{best_5k_qls[4]}}  Seconds: {{best_5k_rls[4]}}</h1>
+
+    <!-- <h1>{{date_ls}}</h1> -->
+ 
+
+</div>
+<br>
+
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Chartjs Charts</title>
+</head>
+ 
+<body>
+    <div style="height: 50vh; width: 50%;">
+        <canvas id="myChart"></canvas>
+    </div>
+ 
+    <script>
+        const labels = {{ rev_date_ls | tojson}};
+ 
+        const data = {
+            labels: labels,
+            datasets: [{
+                label: 'Run Times',
+                backgroundColor: 'rgb(255, 99, 132)',
+                borderColor: 'rgb(255, 99, 132)',
+                data: {{ rev_best_5k_ls | tojson}},
+            }]
+        };
+ 
+        const config = {
+            type: 'line',
+            data: data,
+            options: { maintainAspectRatio: false }
+        };
+ 
+        const myChart = new Chart(
+            document.getElementById('myChart'),
+            config
+        );
+ 
+    </script>
+</body>
+
+
+
+{% endblock %}
