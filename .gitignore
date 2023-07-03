@@ -5,4 +5,4 @@ myenv/
 *.pyc
 
 # Environment variables file
-.cfg
+*.cfg
