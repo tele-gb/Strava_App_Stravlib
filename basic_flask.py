@@ -15,18 +15,25 @@ from stravalib import Client
 from datetime import datetime, timedelta
 
 
+import os
+os.environ['APP_SETTINGS'] = 'settings.cfg'
+
 
 app=Flask(__name__)
 app.secret_key = "Lis@2104"
 
 #put these in enviroment vars
-client_id = "96903"
-client_secret = "0f4e7f68927263eb277b60fa2ef396b7964cdc94"
+
+app.config.from_envvar("APP_SETTINGS")
+
+
+# client_id = "96903"
+# client_secret = "0f4e7f68927263eb277b60fa2ef396b7964cdc94"
 
 @app.route('/')
 def index():
     c = Client()
-    url = c.authorization_url(client_id=int(client_id),
+    url = c.authorization_url(client_id=app.config["CLIENT_ID"],
                             redirect_uri=url_for('.lastruns',_external=True )
                             ,scope=['read_all','profile:read_all','activity:read_all'],
                             approval_prompt="force")
@@ -54,8 +61,8 @@ def lastruns():
     print(stuff)
     client = Client()
     access_token = client.exchange_code_for_token(
-                                                    client_id=int(client_id),
-                                                    client_secret=client_secret,
+                                                    client_id=app.config["CLIENT_ID"],
+                                                    client_secret=app.config["CLIENT_SECRET"],
                                                     code=code,
                                                 )
         # Probably here you'd want to store this somewhere -- e.g. in a database.
@@ -128,11 +135,7 @@ def lastruns2():
                            rev_best_5k_ls=rev_best_5k_ls,
                            rev_date_ls=rev_date_ls,
                            rev_5k_qls=rev_5k_qls,
-                           rev_best_5k_rls=rev_best_5k_rls
-
-
-
-                           )
+                           rev_best_5k_rls=rev_best_5k_rls)
 
 
 # @app.route('/calculate')
