@@ -3,23 +3,47 @@
 <div class = 'jumbotron'>
 
     <h1>What scale are you trying to work out</h1>
-    <h1>Replace with info form</h1>
+    <!-- <h1>Replace with info form</h1> -->
 
 
     <h1>Scale Viewer</h1>
-    <form method="POST" action="{{ url_for('show_scale') }}">
-        <label for="scale">Scale:</label>
-        <input type="text" id="scale" name="scale"><br>
+    <form method="POST" action="{{ url_for('guitarscale') }}">
+
+        <label for="scale_type">Select Scale Type:</label>
+        <select id="scale_type" name="scale_type">
+            {% for key, value in scale_types.items() %}
+                <option value="{{ key }}">{{ key }}</option>
+            {% endfor %}
+        </select><br>
 
         <label for="root_note">Root Note:</label>
         <input type="text" id="root_note" name="root_note"><br>
 
-        <label for="guitar_tuning">Guitar Tuning:</label>
-        <input type="text" id="guitar_tuning" name="guitar_tuning"><br>
+        <label for="tuning_type">Select Tuning:</label>
+        <select id="tuning_type" name="tuning_type">
+            {% for key, value in tuning_types.items() %}
+                <option value="{{ key }}">{{ key }}</option>
+            {% endfor %}
+        </select><br>
 
         <input type="submit" value="Submit">
     </form>
 
 
 </div>
+
+
+<!-- <div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2></h2>
+            <p>Test Results: {{results4}}</p>
+        </div>
+    </div>
+</div> -->
+
+{% if svg_image %}
+<h2>Scale Fretboard</h2>
+<img src="data:image/svg+xml;base64,{{ svg_image }}" alt="Scale Fretboard">
+{% endif %}
 {% endblock %}

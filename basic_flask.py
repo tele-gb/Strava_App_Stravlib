@@ -13,11 +13,9 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 from pprint import pprint # just a handy printing function
 from stravalib import Client
 from datetime import datetime, timedelta
-
 from flask_wtf import FlaskForm
 from wtforms import (StringField, SubmitField,BooleanField,DateTimeField,
                     SelectField,TextAreaField,RadioField,StringField)
-
 from wtforms.validators import DataRequired
 from guitar import Guitar
 import fretboard  
@@ -175,23 +173,44 @@ def lastruns2():
 #                             min_pay=min_pay,its=its,
 #                             total_int=total_int)
 
+#define some globel variable
+guitar = Guitar()
+scale_types = guitar.scale_dict
+tuning_types = guitar.tuning_dict
+
 @app.route('/guitarscale', methods=['GET', 'POST'])
-def scale():
+def guitarscale():
     if request.method == 'POST':
         # Get form inputs
-        scale = request.form['scale']
-        root_note = request.form['root_note']
-        guitar_tuning = request.form['guitar_tuning']
 
-        # Generate SVG image using your existing code
-        svg_image = generate_svg(scale, root_note, guitar_tuning)
+        # scale_type = request.form['scale_type']
+        scale_type = request.form.get('scale_type', 'maj_scale')
+        root = request.form['root_note']
+        tuning_type = request.form.get('tuning_type', 'standard')
+        svg_file = "static/test.png"
 
-        # Encode the SVG image as base64
+        results4 = guitar.add_markers(root,scale_type,tuning_type,0)
+        guitar.draw_fretboard(0,12,root,scale_type,tuning_type,0,svg_file)
+        svg_image=guitar.get_svg_string(svg_file)
         svg_image_base64 = base64.b64encode(svg_image.encode('utf-8')).decode('utf-8')
 
-        return render_template('guitarscale.html', svg_image=svg_image_base64)
+        # Generate SVG image using your existing code
+        # --svg_image = generate_svg(scale, root_note, guitar_tuning)
+        # test2 = scale
 
-    return render_template('guitarscale.html', svg_image=None)
+        # Encode the SVG image as base64
+        # --svg_image_base64 = base64.b64encode(svg_image.encode('utf-8')).decode('utf-8')
+
+        return render_template('guitarscale.html',
+                               svg_image=svg_image_base64,
+                            scale_types=scale_types,scale_type=scale_type,results4=results4,tuning_types=tuning_types,root=root
+                            #    ,root_note=root_note
+                            )
+    return render_template('guitarscale.html',
+                           svg_image=None,
+                           scale_types=scale_types,tuning_types=tuning_types
+                        #    ,root_note=root_note
+                           )
 
 
 @app.errorhandler(404)
