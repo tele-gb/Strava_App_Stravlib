@@ -14,6 +14,15 @@ from pprint import pprint # just a handy printing function
 from stravalib import Client
 from datetime import datetime, timedelta
 
+from flask_wtf import FlaskForm
+from wtforms import (StringField, SubmitField,BooleanField,DateTimeField,
+                    SelectField,TextAreaField,RadioField,StringField)
+
+from wtforms.validators import DataRequired
+from guitar import Guitar
+import fretboard  
+# from IPython.display import SVG, display
+
 
 import os
 os.environ['APP_SETTINGS'] = 'settings.cfg'
@@ -30,7 +39,12 @@ app.config.from_envvar("APP_SETTINGS")
 # client_id = "96903"
 # client_secret = "0f4e7f68927263eb277b60fa2ef396b7964cdc94"
 
+
 @app.route('/')
+def home():
+    return render_template('home.html')
+
+@app.route('/strava')
 def index():
     c = Client()
     url = c.authorization_url(client_id=app.config["CLIENT_ID"],
@@ -39,18 +53,6 @@ def index():
                             approval_prompt="force")
     print(url)
     return render_template('index.html',authorize_url=url)
-
-# @app.route('/input')
-# def input():
-
-#     c = Client()
-#     url = c.authorization_url(client_id=int(client_id),
-#                             redirect_uri=url_for('.lastruns',_external=True )
-#                             ,scope='read_all')
-#     print(url)
-    
-
-#     return render_template('input.html',authorize_url=url)
 
 @app.route('/lastruns')
 def lastruns():
@@ -65,7 +67,7 @@ def lastruns():
                                                     client_secret=app.config["CLIENT_SECRET"],
                                                     code=code,
                                                 )
-        # Probably here you'd want to store this somewhere -- e.g. in a database.
+    # Probably here you'd want to store this somewhere -- e.g. in a database.
     strava_athlete = client.get_athlete()
     # print(access_token['access_token'])
     session['sac'] = access_token['access_token']
@@ -173,32 +175,24 @@ def lastruns2():
 #                             min_pay=min_pay,its=its,
 #                             total_int=total_int)
 
-# @app.route('/username_report')
-# def username_report():
-#     username = request.args.get('username')
-#         # <li>Have a capital letter</li>
-#         # <li>Have a lowercase letter</li>
-#         # <li>Have a number at the end</li>
-#     upper = 0
-#     lower = 0
-#     for i in username:
-#         if i.isupper():
-#             upper=upper + 1
-#     if upper > 0:
-#         upper = True
+@app.route('/guitarscale', methods=['GET', 'POST'])
+def scale():
+    if request.method == 'POST':
+        # Get form inputs
+        scale = request.form['scale']
+        root_note = request.form['root_note']
+        guitar_tuning = request.form['guitar_tuning']
 
-#     for i in username:
-#         if i.islower():
-#             lower=lower + 1
-#     if lower > 0:
-#         lower = True
+        # Generate SVG image using your existing code
+        svg_image = generate_svg(scale, root_note, guitar_tuning)
 
-#     num_end = username[-1].isdigit()
+        # Encode the SVG image as base64
+        svg_image_base64 = base64.b64encode(svg_image.encode('utf-8')).decode('utf-8')
 
-#     report = upper and lower and num_end
+        return render_template('guitarscale.html', svg_image=svg_image_base64)
 
+    return render_template('guitarscale.html', svg_image=None)
 
-#     return render_template('username_report.html',username=username,upper=upper,lower=lower,num_end=num_end,report=report)
 
 @app.errorhandler(404)
 def page_not_found(e):

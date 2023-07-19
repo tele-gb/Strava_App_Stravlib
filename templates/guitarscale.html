@@ -1,0 +1,25 @@
+{% extends "base.html"%}
+{% block content %}
+<div class = 'jumbotron'>
+
+    <h1>What scale are you trying to work out</h1>
+    <h1>Replace with info form</h1>
+
+
+    <h1>Scale Viewer</h1>
+    <form method="POST" action="{{ url_for('show_scale') }}">
+        <label for="scale">Scale:</label>
+        <input type="text" id="scale" name="scale"><br>
+
+        <label for="root_note">Root Note:</label>
+        <input type="text" id="root_note" name="root_note"><br>
+
+        <label for="guitar_tuning">Guitar Tuning:</label>
+        <input type="text" id="guitar_tuning" name="guitar_tuning"><br>
+
+        <input type="submit" value="Submit">
+    </form>
+
+
+</div>
+{% endblock %}

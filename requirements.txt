@@ -7,3 +7,9 @@ gunicorn
 # stravaio
 Requests
 stravalib
+Flask-WTF
+WTForms
+svgutils
+pyyaml 
+pathlib
+fretboard
