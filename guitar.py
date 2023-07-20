@@ -24,12 +24,23 @@ class Guitar:
             'bass':['e','a','d','g'],
             'ukelele':['g','c','e','a']
         }
+
+        self.strings_dict = {
+            'standard':6,
+            'drop d':6,
+            'open g':6,
+            'bass':4,
+            'ukelele':4
+        }
     
     def tuningdef(self,tuning):
         tun_ls = self.tuning_dict[tuning]
-#         print(tuning)
         return tun_ls 
      
+    def string_num(self,tuning):
+        strings = self.strings_dict[tuning]
+        return strings
+
     def scale(self,root,scalelist):
         scale_ls=self.scale_dict[scalelist]
         a=self.notes.index(root)
@@ -91,7 +102,7 @@ class Guitar:
         return marker_ls
                   
     def draw_fretboard(self,fretlow,frethigh,root,scale,tuning,count,svg_file):
-        fb = fretboard.Fretboard(frets=(fretlow,frethigh),strings=6, style={'drawing': {                                                                             'width': 400,
+        fb = fretboard.Fretboard(frets=(fretlow,frethigh),strings=self.string_num(tuning), style={'drawing': {                                                                             'width': 400,
                                                                                 'height':500},
                                                                     'marker': {'color': 'black'},})
         marker = self.add_markers(root,scale,tuning,count)
@@ -111,5 +122,5 @@ class Guitar:
             svg_string = file.read()
         return svg_string
     
-    def display_svg(self,svg_string):
-        display(SVG(svg_string))
+    # def display_svg(self,svg_string):
+    #     display(SVG(svg_string))

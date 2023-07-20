@@ -32,18 +32,10 @@
 
 </div>
 
-
-<!-- <div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <h2></h2>
-            <p>Test Results: {{results4}}</p>
-        </div>
-    </div>
-</div> -->
-
 {% if svg_image %}
-<h2>Scale Fretboard</h2>
+<h1>Root:{{root}} </h1>
+<h1>Scale: {{scale_type}}  </h1>
+<h1>Tuning: {{tuning_type}}</h1>
 <img src="data:image/svg+xml;base64,{{ svg_image }}" alt="Scale Fretboard">
 {% endif %}
 {% endblock %}

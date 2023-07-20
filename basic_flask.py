@@ -189,21 +189,14 @@ def guitarscale():
         tuning_type = request.form.get('tuning_type', 'standard')
         svg_file = "static/test.png"
 
-        results4 = guitar.add_markers(root,scale_type,tuning_type,0)
         guitar.draw_fretboard(0,12,root,scale_type,tuning_type,0,svg_file)
         svg_image=guitar.get_svg_string(svg_file)
         svg_image_base64 = base64.b64encode(svg_image.encode('utf-8')).decode('utf-8')
 
-        # Generate SVG image using your existing code
-        # --svg_image = generate_svg(scale, root_note, guitar_tuning)
-        # test2 = scale
-
-        # Encode the SVG image as base64
-        # --svg_image_base64 = base64.b64encode(svg_image.encode('utf-8')).decode('utf-8')
 
         return render_template('guitarscale.html',
                                svg_image=svg_image_base64,
-                            scale_types=scale_types,scale_type=scale_type,results4=results4,tuning_types=tuning_types,root=root
+                            scale_types=scale_types,scale_type=scale_type,tuning_types=tuning_types,root=root,tuning_type=tuning_type
                             #    ,root_note=root_note
                             )
     return render_template('guitarscale.html',
