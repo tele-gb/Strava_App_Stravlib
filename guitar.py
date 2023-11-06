@@ -102,7 +102,7 @@ class Guitar:
         return marker_ls
                   
     def draw_fretboard(self,fretlow,frethigh,root,scale,tuning,count,svg_file):
-        fb = fretboard.Fretboard(frets=(fretlow,frethigh),strings=self.string_num(tuning), style={'drawing': {                                                                             'width': 400,
+        fb = fretboard.Fretboard(frets=(fretlow,frethigh),strings=self.string_num(tuning), style={'drawing': {'width': 400,
                                                                                 'height':500},
                                                                     'marker': {'color': 'black'},})
         marker = self.add_markers(root,scale,tuning,count)
