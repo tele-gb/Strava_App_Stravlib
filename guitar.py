@@ -1,3 +1,7 @@
+##### A CLASS TO CALCUATE VARIOUS GUITAR SCALES                         ######
+##### NEW SCALES CAN BE ADDED BY ADDING THE INTERVALS TO THE SCALE_DICT ######
+
+
 import fretboard  
 
 class Guitar:
