@@ -18,6 +18,7 @@ from wtforms import (StringField, SubmitField,BooleanField,DateTimeField,
                     SelectField,TextAreaField,RadioField,StringField)
 from wtforms.validators import DataRequired
 from guitar import Guitar
+from Strava_Stats import StravaStats
 import fretboard  
 # from IPython.display import SVG, display
 
@@ -74,68 +75,26 @@ def lastruns():
     return render_template('lastruns.html',code=code,athlete=strava_athlete,access_token=access_token,)
 
 
+strava=StravaStats()
+
 @app.route('/lastruns2')
 def lastruns2():
     strava_access_token = session.get('sac') 
-    print(strava_access_token)
-    activites_url = "https://www.strava.com/api/v3/athlete/activities"
-    header = {'Authorization': 'Bearer ' + strava_access_token}
-    print(header)
-    param = {'per_page': 200, 'page': 1}
-    my_dataset = requests.get(activites_url, headers=header, params=param).json()
-    # print(header)
-    activitiesbyid_url = "https://www.strava.com/api/v3/activities/{}"
-    # url = activitiesbyid_url.format(runid)
-    # print(my_dataset)
+    header2 = {'Authorization': 'Bearer ' + strava_access_token}
 
-    best_5k_ls = []
-    name_ls = []
-    date_ls = []
+    print(f'Access Token: {strava_access_token}')
+    print(f'Header: {header2}')
+ 
+    actlist = strava.all_activities(header2)
+    testlist = strava.activities_list(actlist,5000,50)
+    testdf = strava.multi_activities(50,testlist,header2)
+    testdf2 = strava.rolling_df(testdf,3)
 
-    its = len(my_dataset)
 
-    run_ls=[]
-    for i in range (0,50):
-        run_ls.append(my_dataset[i]['id'])
-
-    best_5k_ls=[]
-    best_5k_qls=[]
-    best_5k_rls=[]
-    date_ls=[]
-    for i in range (0,len(run_ls)):
-        runid = run_ls[i]
-#     print(runid)
-        url = activitiesbyid_url.format(runid)
-        activities = requests.get(url, headers=header).json()
-        # WORK OUT LENGTH OF BEST ACTIVITIES DICTIONARY
-    
-        # print(url)
-        # print(activities)
-
-        if len(activities) == 63:
-            if len(activities['best_efforts']) > 5:
-                datetime_obj = datetime.strptime(activities['start_date'], '%Y-%m-%dT%H:%M:%S%z')      
-                date=datetime_obj.date()
-                date_ls.append(date)
-
-                best_5k_qls.append(activities["best_efforts"][5]["elapsed_time"]//60)
-                best_5k_rls.append(activities["best_efforts"][5]["elapsed_time"]%60)
-                best_5k_ls.append(activities["best_efforts"][5]["elapsed_time"]/60)
-
-                rev_best_5k_ls=list(reversed(best_5k_ls))
-                rev_date_ls=list(reversed(date_ls))
-                rev_5k_qls=list(reversed(best_5k_qls))
-                rev_best_5k_rls=list(reversed(best_5k_rls))
 
    
-    return render_template('lastruns2.html'
-                           ,
-                           best_5k_ls=best_5k_ls,date_ls=date_ls,best_5k_rls=best_5k_rls,
-                           best_5k_qls=best_5k_qls,
-                           rev_best_5k_ls=rev_best_5k_ls,
-                           rev_date_ls=rev_date_ls,
-                           rev_5k_qls=rev_5k_qls,
-                           rev_best_5k_rls=rev_best_5k_rls)
+    return render_template('lastruns2.html',
+                            tables=[testdf2.to_html(classes='data')], titles=testdf2.columns.values)
 
 
 # @app.route('/calculate')

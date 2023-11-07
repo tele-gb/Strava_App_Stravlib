@@ -2,9 +2,11 @@
 {% block content %}
 <div class='jumbotron'>
     <div class="container">
-        <H1>Strava App</H1>
+        <!-- <H1>Strava App</H1> -->
+        <img src="{{ url_for('static', filename='just5klogo.png') }}" alt="Logo">
+        <br>
         <a href="{{ authorize_url }}">Authorize with Strava</a>
-        <p>This is some content inside the jumbotron.</p>
+
     </div>
 </div>
 
