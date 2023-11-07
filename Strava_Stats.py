@@ -6,10 +6,10 @@
 
 import requests
 import urllib3
-import xmltodict
+# import xmltodict
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-from stravaio import StravaIO
-from stravaio import strava_oauth2
+# from stravaio import StravaIO
+# from stravaio import strava_oauth2
 from pprint import pprint # just a handy printing function
 from datetime import datetime, timedelta
 import pandas as pd
@@ -31,16 +31,16 @@ class StravaStats:
         self.all_activities_list = []
         self.activitiesbyid_url = "https://www.strava.com/api/v3/activities/{}"
                 
-    def authenticate(self,id,secret):
-        token = strava_oauth2(client_id=id, client_secret=secret)
-        strava_access_token=token['access_token']
-        return token
+    # def authenticate(self,id,secret):
+    #     token = strava_oauth2(client_id=id, client_secret=secret)
+    #     strava_access_token=token['access_token']
+    #     return token
 
-    def start_client(self,id,secret):
-        strava_access_token = self.authenticate(id,secret)
-        client = StravaIO(access_token=strava_access_token)
-        header = {'Authorization': 'Bearer ' + strava_access_token['access_token']}
-        return header     
+    # def start_client(self,id,secret):
+    #     strava_access_token = self.authenticate(id,secret)
+    #     client = StravaIO(access_token=strava_access_token)
+    #     header = {'Authorization': 'Bearer ' + strava_access_token['access_token']}
+    #     return header     
     
     def all_activities(self,header):
         all_activities_list = []
@@ -83,7 +83,7 @@ class StravaStats:
         id_batches = [activity_list[i:i + batch_size] for i in range(0, len(activity_list), batch_size)]
         return id_batches
     
-    def pull_activity(self,runid):
+    def pull_activity(self,runid,header):
         url = self.activitiesbyid_url.format(runid)
         activities = requests.get(url, headers=header).json()
         return activities
@@ -109,7 +109,7 @@ class StravaStats:
         combined = float((q) + '.' + (r))
         return combined
     
-    def multi_activities(self,batch_size,activity_list):
+    def multi_activities(self,batch_size,activity_list,header):
         test_list = []
         distance_list = []
         date_list = []
@@ -122,7 +122,7 @@ class StravaStats:
         for batch_num, id_batch in enumerate(id_batches,start=1):
             print(f"Processing batch {batch_num}")
             for i in id_batch:
-                activity=self.pull_activity(i)
+                activity=self.pull_activity(i,header)
                 if len(activity) == 63:
                     runid_list.append(activity['id']) 
                     test_list.append(len(activity))
