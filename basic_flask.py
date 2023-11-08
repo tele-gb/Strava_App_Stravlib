@@ -44,14 +44,14 @@ def home():
     return render_template('home.html')
 
 @app.route('/strava')
-def index():
+def strava():
     c = Client()
     url = c.authorization_url(client_id=app.config["CLIENT_ID"],
                             redirect_uri=url_for('.lastruns',_external=True )
                             ,scope=['read_all','profile:read_all','activity:read_all'],
                             approval_prompt="force")
     print(url)
-    return render_template('index.html',authorize_url=url)
+    return render_template('stravamain.html',authorize_url=url)
 
 @app.route('/lastruns')
 def lastruns():
@@ -97,40 +97,10 @@ def lastruns2():
                             tables=[testdf2.to_html(classes='data')], titles=testdf2.columns.values)
 
 
-# @app.route('/calculate')
-# def calculate():
-#     balance = request.args.get('balance')
-#     apr = request.args.get('APR')
-#     min_pay = request.args.get('min_pay')
-#     its=0
-#     total_int = 0
-#     cbal = int(balance)
-#     bal_list=[]
-#     while cbal > 0:
-#         its = its + 1
-#         int_amt = round(cbal*((float(apr)/100)/12),2)
-#         pay_amt = round(max(cbal*(float(min_pay)/100)+int_amt,5),2)
-#         nbal = cbal+int_amt-pay_amt
-#         cbal = round(nbal,2)  
-#         total_int = round(total_int+int_amt,2)
-#         bal_list.append(cbal)
-#         xax = list(range(its))
+@app.route('/calculate')
+def calculate():
 
-# #start to make chart object
-#     fig,ax=plt.subplots(figsize=(6,6))
-#     ax=sns.set(style="darkgrid")
-#     sns.lineplot(x=xax,y=bal_list).set(title="Paydown Curve")
-#     canvas=FigureCanvas(fig)
-# # 'converts chart into bytes'
-#     img=io.BytesIO()
-#     fig.savefig(img)
-#     img.seek(0)
-# #GETS THE VALUE OF THE CHART AND PUTS IN A VARIABLE
-#     plot_url = base64.b64encode(img.getvalue()).decode('utf8')
-#     return render_template('calculate.html',plot_url=plot_url,
-#                             balance=balance,apr=apr,
-#                             min_pay=min_pay,its=its,
-#                             total_int=total_int)
+    return render_template('calculate.html')
 
 #define some globel variable
 guitar = Guitar()

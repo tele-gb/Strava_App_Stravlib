@@ -1,5 +1,6 @@
 {% extends "base.html"%}
 {% block content %}
+<head>    <link rel="stylesheet" type="text/css" href="static/css/calc.css"> </head>
 <div class = 'jumbotron'>
 
     <h1>What scale are you trying to work out</h1>
@@ -7,7 +8,7 @@
 
 
     <h1>Scale Viewer</h1>
-    <form method="POST" action="{{ url_for('guitarscale') }}">
+    <form method="POST" action="{{ url_for('guitarscale') }}" id="guitar-form">
 
         <label for="scale_type">Select Scale Type:</label>
         <select id="scale_type" name="scale_type">
