@@ -160,20 +160,21 @@ class StravaStats:
         return df
     
     def rolling_df(self,input_df,window):
-        input_df['seconds']=input_df["Best_Time"].apply(self.convert_to_seconds)
-        rolling_mean = input_df["seconds"].rolling(window=window).mean()
-        rolling_median = input_df["seconds"].rolling(window=window).median()
-        input_df["rolling_mean"] = rolling_mean
-        input_df["rolling_median"] = rolling_median
+        input_df['Seconds']=input_df["Best_Time"].apply(self.convert_to_seconds)
+        rolling_mean = input_df["Seconds"].rolling(window=window).mean()
+        rolling_median = input_df["Seconds"].rolling(window=window).median()
+        input_df["Rolling_Mean"] = rolling_mean
+        input_df["Rolling_Median"] = rolling_median
         input_df2=input_df.fillna(0)
-        input_df2["rolling_mean"] = input_df2["rolling_mean"].astype(int)
-        input_df2["rolling_median"] = input_df2["rolling_median"].astype(int)
-        input_df2["rolling_mean"] = input_df2["rolling_mean"].apply(self.convert_to_minutes)
-        input_df2["rolling_median"] = input_df2["rolling_median"].apply(self.convert_to_minutes)   
+        input_df2["Rolling_Mean"] = input_df2["Rolling_Mean"].astype(int)
+        input_df2["Rolling_Median"] = input_df2["Rolling_Median"].astype(int)
+        input_df2["Rolling_Mean"] = input_df2["Rolling_Mean"].apply(self.convert_to_minutes)
+        input_df2["Rolling_Median"] = input_df2["Rolling_Median"].apply(self.convert_to_minutes)   
         return input_df2
     
     
     def basic_stats(self,input_df):
+        ######need to make this into lots of different functions######
         sec_list = self.convert_to_seconds_df(input_df,'Best_Time')
         mean_seconds = sum(sec_list)/len(sec_list)
         mean_of_runs = self.convert_to_minutes(int(mean_seconds))
@@ -188,23 +189,15 @@ class StravaStats:
         fastest_day = input_df.loc[input_df['Best_Time'] == fastest_time,'Date'].squeeze()
         slowest_time = input_df['Best_Time'].max()
         slowest_day = input_df.loc[input_df['Best_Time'] == slowest_time,'Date'].squeeze()
-        print(f" Average Run Time is {round(mean_of_runs,2)}")
-        print(f" Median Run Time is {median_of_runs}")     
-        print(f" The fastest time was {fastest_time}, on the {fastest_day}")
-        print(f" The slowest time was {slowest_time}, on the {slowest_day}")
+        mean_time = round(mean_of_runs,2)
         latest_date = input_df['Date'].max()
         last_run_time = input_df.loc[input_df['Date'] == latest_date,'Best_Time'].squeeze()
         current_time_delta = self.convert_to_seconds(last_run_time)-self.convert_to_seconds(mean_of_runs)
 
-        if current_time_delta <- 0:
-            print(f" Your last run was {abs(round(current_time_delta,2))} seconds faster then your average")
-        else:
-            print(f" Your last run was {abs(round(current_time_delta,2))} seconds slower then your average")
-            
 
     def plot(self,df):
-        df['rolling_mean'] = df['rolling_mean'].replace(0, np.nan)
-        df['rolling_median'] = df['rolling_median'].replace(0, np.nan)
+        df['Rolling_Mean'] = df['Rolling_Mean'].replace(0, np.nan)
+        df['Rolling_Median'] = df['Rolling_Median'].replace(0, np.nan)
         plt.figure(figsize=(15, 15)) 
         # plt.ylim(ymin=0)
         # plt.ylim(bottom=28,top=40)
@@ -218,8 +211,8 @@ class StravaStats:
         plt.xticks(rotation=45)
         plt.scatter(df['Date'],df['Best_Time'],edgecolors='black',c='white',s=200)
         # plt.scatter(new_df['Date'],new_df['10k_time'],edgecolors='black',c='blue',s=200)
-        plt.plot(df['Date'],df['rolling_mean'],lw=10,c='red',alpha=0.5)
-        plt.plot(df['Date'],df['rolling_median'],lw=10,c='green',alpha=0.5)
+        plt.plot(df['Date'],df['Rolling_Mean'],lw=10,c='red',alpha=0.5)
+        plt.plot(df['Date'],df['Rolling_Median'],lw=10,c='green',alpha=0.5)
         plt.ylabel('5k time',fontname="Arial", fontsize=20)
         plt.xlabel('Date',fontname="Arial", fontsize=20)
         plt.xticks(rotation=90,fontname="Arial", fontsize=20)
