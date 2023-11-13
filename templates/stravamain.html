@@ -1,11 +1,14 @@
 {% extends "base.html"%}
 {% block content %}
-<div class='jumbotron'>
-    <div class="container">
-        <!-- <H1>Strava App</H1> -->
-        <img src="{{ url_for('static', filename='just5klogo.png') }}" alt="Logo">
-        <br>
-        <a href="{{ authorize_url }}">Authorize with Strava</a>
+
+<head>    <link rel="stylesheet" type="text/css" href="static/css/strava.css"> </head>
+
+<div class="jumbotron">
+    <!-- <img class="image image-contain" src="'/static/just5klogo.png" /> -->
+    <div class="stravalogo" >
+         <img height="500">
+
+
 
     </div>
 </div>
@@ -14,8 +17,8 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <h2>Content Outside of Jumbotron</h2>
-            <p>This is some content outside of the jumbotron.</p>
+            <h2>Click here to authorize with strava</h2>
+            <a href="{{ authorize_url }}" style="font-size:300%;color:#0000FF;" >Authorize with Strava</a> 
         </div>
     </div>
 </div>

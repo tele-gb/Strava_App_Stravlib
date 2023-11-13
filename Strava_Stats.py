@@ -171,29 +171,6 @@ class StravaStats:
         input_df2["Rolling_Mean"] = input_df2["Rolling_Mean"].apply(self.convert_to_minutes)
         input_df2["Rolling_Median"] = input_df2["Rolling_Median"].apply(self.convert_to_minutes)   
         return input_df2
-    
-    
-    def basic_stats(self,input_df):
-        ######need to make this into lots of different functions######
-        sec_list = self.convert_to_seconds_df(input_df,'Best_Time')
-        mean_seconds = sum(sec_list)/len(sec_list)
-        mean_of_runs = self.convert_to_minutes(int(mean_seconds))
-
-        sec_list.sort() 
-        mid = len(sec_list) // 2
-        res = (sec_list[mid] + sec_list[~mid]) / 2
-
-        median_of_runs = self.convert_to_minutes(int(res))
-
-        fastest_time = input_df['Best_Time'].min()
-        fastest_day = input_df.loc[input_df['Best_Time'] == fastest_time,'Date'].squeeze()
-        slowest_time = input_df['Best_Time'].max()
-        slowest_day = input_df.loc[input_df['Best_Time'] == slowest_time,'Date'].squeeze()
-        mean_time = round(mean_of_runs,2)
-        latest_date = input_df['Date'].max()
-        last_run_time = input_df.loc[input_df['Date'] == latest_date,'Best_Time'].squeeze()
-        current_time_delta = self.convert_to_seconds(last_run_time)-self.convert_to_seconds(mean_of_runs)
-
 
     def plot(self,df):
         df['Rolling_Mean'] = df['Rolling_Mean'].replace(0, np.nan)
@@ -219,3 +196,67 @@ class StravaStats:
         plt.yticks(np.arange(round(df['Best_Time'].min(),0)-1,df['Best_Time'].max()+1 , step=1),fontname="Arial", fontsize=20)
         plt.grid(linestyle='--')
         plt.show()
+
+            
+    def fastest_time(self,input_df):
+        fastest_time = input_df['Best_Time'].min()
+        return fastest_time
+    
+    def fastest_day(self,input_df):
+        fastest_time=self.fastest_time(input_df)
+        fastest_day = input_df.loc[input_df['Best_Time'] == fastest_time,'Date'].squeeze()
+        return fastest_day
+    
+    def slowest_time(self,input_df):
+        slowest_time=input_df['Best_Time'].max()
+        return slowest_time
+    
+    def slowest_day(self,input_df):
+        slowest_time=self.slowest_time(input_df)
+        slowest_day=input_df.loc[input_df['Best_Time'] == slowest_time,'Date'].squeeze()
+        return slowest_day
+    
+    def latest_day(self,input_df):
+        latest_date = input_df['Date'].max()
+        return latest_date
+    
+    def latest_time(self,input_df):
+        latest_date=self.latest_day(input_df)
+        last_run_time = input_df.loc[input_df['Date'] == latest_date,'Best_Time'].squeeze()
+        return last_run_time
+        
+    def mean_run_time(self,input_df):
+        sec_list = self.convert_to_seconds_df(input_df,'Best_Time')
+        mean_seconds = sum(sec_list)/len(sec_list)
+        mean_of_runs = self.convert_to_minutes(int(mean_seconds))
+        return mean_of_runs
+
+    def median_run_time(self,input_df):
+        sec_list = self.convert_to_seconds_df(input_df,'Best_Time')
+        mid = len(sec_list) // 2
+        res = (sec_list[mid] + sec_list[~mid]) / 2
+        median_of_runs = self.convert_to_minutes(int(res))     
+        return median_of_runs
+    
+    def basic_stats(self,input_df):
+        mean_of_runs = self.mean_run_time(input_df)
+        median_of_runs = self.median_run_time(input_df)
+        fastest_time = self.fastest_time(input_df)
+        fastest_day = self.fastest_day(input_df)
+        slowest_time = self.slowest_time(input_df)
+        slowest_day = self.slowest_day(input_df)
+        latest_day=self.latest_day(input_df)
+        latest_time=self.latest_time(input_df)
+        
+        print(f" Average Run Time is {round(mean_of_runs,2)}")
+        print(f" Median Run Time is {median_of_runs}")     
+        print(f" The fastest time was {fastest_time}, on the {fastest_day}")
+        print(f" The slowest time was {slowest_time}, on the {slowest_day}")
+
+        current_time_delta = self.convert_to_seconds(latest_time)-self.convert_to_seconds(mean_of_runs)
+
+        if current_time_delta <- 0:
+            print(f" Your last run was {abs(round(current_time_delta,2))} seconds faster then your average")
+        else:
+            print(f" Your last run was {abs(round(current_time_delta,2))} seconds slower then your average")
+        

@@ -86,15 +86,33 @@ def lastruns2():
     print(f'Header: {header2}')
  
     actlist = strava.all_activities(header2)
-    testlist = strava.activities_list(actlist,5000,50)
+    testlist = strava.activities_list(actlist,5000,10)
     testdf = strava.multi_activities(50,testlist,header2)
     testdf2 = strava.rolling_df(testdf,3)
 
+    mean_of_runs = strava.mean_run_time(testdf2)
+    median_of_runs = strava.median_run_time(testdf2)
+    fastest_time = strava.fastest_time(testdf2)
+    fastest_day = strava.fastest_day(testdf2)
+    slowest_time = strava.slowest_time(testdf2)
+    slowest_day = strava.slowest_day(testdf2)
+    latest_day=strava.latest_day(testdf2)
+    latest_time=strava.latest_time(testdf2)
 
-
+    current_time_delta = abs(round(strava.convert_to_seconds(latest_time)-strava.convert_to_seconds(mean_of_runs),2))
    
     return render_template('lastruns2.html',
-                            tables=[testdf2.to_html(classes='data')], titles=testdf2.columns.values)
+                           mean_of_runs=mean_of_runs,
+                           median_of_runs=median_of_runs,
+                           fastest_time=fastest_time,
+                           fastest_day=fastest_day,
+                           slowest_time=slowest_time,
+                           slowest_day=slowest_day,
+                           latest_day=latest_day,
+                           latest_time=latest_time,
+                           current_time_delta=current_time_delta,
+                           tables=[testdf2.to_html(classes='data')], 
+                           titles=testdf2.columns.values)
 
 
 @app.route('/calculate')
