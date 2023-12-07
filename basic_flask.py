@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request,send_file,session,url_for
+from flask import Flask, render_template, request,send_file,session,url_for,jsonify
 import io
 import base64
 import matplotlib.pyplot as plt
@@ -20,6 +20,7 @@ from wtforms.validators import DataRequired
 from guitar import Guitar
 from Strava_Stats import StravaStats
 import fretboard  
+
 # from IPython.display import SVG, display
 
 
@@ -42,6 +43,9 @@ app.config.from_envvar("APP_SETTINGS")
 @app.route('/')
 def home():
     return render_template('home.html')
+
+#-------------------------------------------------------------------------#
+#----------------STRAVA---------------------------------------------------#
 
 @app.route('/strava')
 def strava():
@@ -114,11 +118,43 @@ def lastruns2():
                            tables=[testdf2.to_html(classes='data')], 
                            titles=testdf2.columns.values)
 
+#-------------------------------------------------------------------------#
+#----------------DEBT CALC------------------------------------------------#
+#global variables
+debtdf_start = None
 
 @app.route('/calculate')
 def calculate():
 
+    # processed_data = request.json
     return render_template('calculate.html')
+
+@app.route('/process_table_data', methods=['POST'])
+def process_table_data():
+    global debtdf_start
+    table_data = request.json  # Get the JSON data sent from the frontend
+    debtdf = pd.DataFrame(table_data)
+    # Process the table_data in your Python function
+    # Perform calculations or any other operations needed
+
+    # For example, let's print the received data
+    print(debtdf)
+    debtdf_start = debtdf
+    # You can return a response if needed
+    return jsonify({'message': 'Data received and processed successfully'})
+    # return render_template('calc_results.html')
+
+@app.route('/calc_results')
+def calc_results():
+    global debtdf_start
+
+    return render_template('calc_results.html',
+                        tables=[debtdf_start.to_html(classes='data')], 
+                        titles=debtdf_start.columns.values)
+
+
+#-------------------------------------------------------------------------#
+#----------------GUITAR---------------------------------------------------#
 
 #define some globel variable
 guitar = Guitar()

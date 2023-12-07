@@ -5,9 +5,7 @@
 
     <h1>Fill in account details</h1>
 
-
     <form id="debt-form">
-
             <label for="Lender">Lender</label>
             <input type="text" name = 'Lender' >
             <br>
@@ -24,13 +22,8 @@
             <input type="text" name = 'type' >
             <br>
             <input type="submit" value="submit form">
-
-
     </form>
 
-    <br>
-    <br>
-    <br>
     <button id="calculate-button">Calculate</button>
 </div>
 
@@ -102,8 +95,29 @@
 
                 // You can now use debtData as input for your debt calculator function.
                 console.log(debtData);
+
+                // Send the table data to the backend using fetch and POST request
+                fetch('/process_table_data', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(debtData),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Response from server:', data);
+                    // Handle the response from the server if needed
+                    // Redirect to the calc_results page after processing the data
+                    window.location.href = '/calc_results';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
             });
         });
+
+
     </script>
 </div>
 {% endblock %}

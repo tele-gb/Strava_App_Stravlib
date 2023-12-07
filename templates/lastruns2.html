@@ -7,9 +7,9 @@
     <h2>Your average time was: {{mean_of_runs}}</h2>
 
     {% if current_time_delta < 0 %}
-    <h2> Your last run was {{ current_time_delta }} seconds faster than your average</h2>
-    {% else %}
     <h2> Your last run was {{ current_time_delta }} seconds slower than your average</h2>
+    {% else %}
+    <h2> Your last run was {{ current_time_delta }} seconds faster than your average</h2>
     {% endif %}
 
 </div>
